@@ -27,7 +27,7 @@
     },
     "autoload": {
         "psr-4": {
-            "GetPoP\\Definitions\\": "src"
+            "PoP\\Definitions\\": "src"
         },
         "files": [
             "initialize.php"
@@ -35,7 +35,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "GetPoP\\Definitions\\": "tests"
+            "PoP\\Definitions\\": "tests"
         }
     },
     "scripts": {
