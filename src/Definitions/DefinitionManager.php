@@ -1,6 +1,7 @@
 <?php
 namespace PoP\Definitions\Definitions;
 
+use PoP\Definitions\Settings\Environment;
 use PoP\Hooks\Contracts\HooksAPIInterface;
 
 class DefinitionManager implements DefinitionManagerInterface
@@ -21,6 +22,9 @@ class DefinitionManager implements DefinitionManagerInterface
 
     public function getDefinitionResolver(): ?DefinitionResolverInterface
     {
+        if (Environment::disableDefinitions()) {
+            return null;
+        }
         return $this->definition_resolver;
     }
     public function setDefinitionResolver(DefinitionResolverInterface $definition_resolver): void
@@ -43,6 +47,9 @@ class DefinitionManager implements DefinitionManagerInterface
     }
     public function getDefinitionPersistence(): ?DefinitionPersistenceInterface
     {
+        if (Environment::disableDefinitions()) {
+            return null;
+        }
         return $this->definition_persistence;
     }
 
@@ -74,8 +81,9 @@ class DefinitionManager implements DefinitionManagerInterface
         }
 
         // Allow the persistence layer to return the value directly
-        if ($this->definition_persistence) {
-            if ($definition = $this->definition_persistence->getSavedDefinition($name, $group)) {
+        $definitionPersistence = $this->getDefinitionPersistence();
+        if ($definitionPersistence) {
+            if ($definition = $definitionPersistence->getSavedDefinition($name, $group)) {
                 $this->definition_names[$group][$definition] = $name;
                 $this->name_definitions[$group][$name] = $definition;
                 return $definition;
@@ -83,10 +91,10 @@ class DefinitionManager implements DefinitionManagerInterface
         }
 
         // Allow the injected Resolver to decide how the name is resolved
-        if ($this->definition_resolver) {
-            $definition = $this->definition_resolver->getDefinition($name, $group);
-            if ($definition != $name && $this->definition_persistence) {
-                $this->definition_persistence->saveDefinition($definition, $name, $group);
+        if ($definitionResolver = $this->getDefinitionResolver()) {
+            $definition = $definitionResolver->getDefinition($name, $group);
+            if ($definition != $name && $definitionPersistence) {
+                $definitionPersistence->saveDefinition($definition, $name, $group);
             }
             $this->definition_names[$group][$definition] = $name;
             $this->name_definitions[$group][$name] = $definition;
@@ -107,8 +115,8 @@ class DefinitionManager implements DefinitionManagerInterface
         }
 
         // Otherwise, ask if the persistence object has it
-        if ($this->definition_persistence) {
-            if ($name = $this->definition_persistence->getOriginalName($definition, $group)) {
+        if ($definitionPersistence = $this->getDefinitionPersistence()) {
+            if ($name = $definitionPersistence->getOriginalName($definition, $group)) {
                 $this->definition_names[$group][$definition] = $name;
                 $this->name_definitions[$group][$name] = $definition;
                 return $name;
@@ -121,8 +129,8 @@ class DefinitionManager implements DefinitionManagerInterface
 
     public function maybeStoreDefinitionsPersistently(): void
     {
-        if ($this->definition_persistence) {
-            $this->definition_persistence->storeDefinitionsPersistently();
+        if ($definitionPersistence = $this->getDefinitionPersistence()) {
+            $definitionPersistence->storeDefinitionsPersistently();
         }
     }
 }
