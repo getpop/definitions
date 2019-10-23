@@ -2,7 +2,6 @@
 namespace PoP\Definitions\Definitions;
 
 use PoP\Definitions\Settings\Environment;
-use PoP\Hooks\Contracts\HooksAPIInterface;
 
 class DefinitionManager implements DefinitionManagerInterface
 {
@@ -19,13 +18,7 @@ class DefinitionManager implements DefinitionManagerInterface
      */
     protected $enabled;
 
-    protected $hooksAPI;
-
-    function __construct(
-        HooksAPIInterface $hooksAPI
-    ) {
-        $this->hooksAPI = $hooksAPI;
-
+    function __construct() {
         /**
          * By default, enable/disable from the Environment value
          * This can be overriden through `setEnabled`
