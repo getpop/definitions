@@ -42,20 +42,6 @@ class DefinitionManager implements DefinitionManagerInterface
         }
     }
 
-    protected function mirrorName($group): bool
-    {
-        $keepname_groups = (array)$this->hooksAPI->applyFilters(
-            'DefinitionManager:keep-name:groups',
-            [
-                POP_DEFINITIONGROUP_ROUTES,
-            ]
-        );
-
-        // Fix this!!! Temporary fix because Utils is not found (in PoP Engine!)
-        // return !Utils::isMangled() || in_array($group, $keepname_groups);
-        return in_array($group, $keepname_groups);
-    }
-
     /**
      * Make sure the name has not been defined already. If it has, throw an Exception
      */
@@ -81,15 +67,6 @@ class DefinitionManager implements DefinitionManagerInterface
     {
         if ($definition = $this->name_definitions[$group][$name]) {
             return $definition;
-        }
-
-        // Mirror: it simply returns the $module again. It confirms in the code that this decision is deliberate
-        // (not calling function getDefinition could also be that the developer forgot about it)
-        // It is simply used to explicitly say that we need the same name as the module, eg: for the filtercomponents,
-        // so that in the URL params it shows names that make sense (author=...&search=...)
-        // If not mangled, then that's it, use the original $module, do not allow plugins to provide a different value
-        if ($this->mirrorName($group)) {
-            return $name;
         }
 
         // Allow the persistence layer to return the value directly
