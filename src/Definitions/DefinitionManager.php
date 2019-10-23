@@ -12,17 +12,38 @@ class DefinitionManager implements DefinitionManagerInterface
     protected $definition_resolver;
     protected $definition_persistence;
 
+    /**
+     * Allow ComponentModel to disable it when not mangling the response
+     *
+     * @var bool
+     */
+    protected $enabled;
+
     protected $hooksAPI;
 
     function __construct(
         HooksAPIInterface $hooksAPI
     ) {
         $this->hooksAPI = $hooksAPI;
+
+        /**
+         * By default, enable/disable from the Environment value
+         * This can be overriden through `setEnabled`
+         */
+        $this->enabled = !Environment::disableDefinitions();
+    }
+    public function setEnabled(bool $enabled): void
+    {
+        $this->enabled = $enabled;
+    }
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
     }
 
     public function getDefinitionResolver(): ?DefinitionResolverInterface
     {
-        if (Environment::disableDefinitions()) {
+        if (!$this->isEnabled()) {
             return null;
         }
         return $this->definition_resolver;
@@ -36,6 +57,13 @@ class DefinitionManager implements DefinitionManagerInterface
             $this->definition_persistence->setDefinitionResolver($this->definition_resolver);
         }
     }
+    public function getDefinitionPersistence(): ?DefinitionPersistenceInterface
+    {
+        if (!$this->isEnabled()) {
+            return null;
+        }
+        return $this->definition_persistence;
+    }
     public function setDefinitionPersistence(DefinitionPersistenceInterface $definition_persistence): void
     {
         $this->definition_persistence = $definition_persistence;
@@ -44,13 +72,6 @@ class DefinitionManager implements DefinitionManagerInterface
         if ($this->definition_resolver) {
             $this->definition_persistence->setDefinitionResolver($this->definition_resolver);
         }
-    }
-    public function getDefinitionPersistence(): ?DefinitionPersistenceInterface
-    {
-        if (Environment::disableDefinitions()) {
-            return null;
-        }
-        return $this->definition_persistence;
     }
 
     /**
