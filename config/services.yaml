@@ -1,0 +1,8 @@
+services:
+    _defaults:
+        bind:
+            PoP\Hooks\Contracts\HooksAPIInterface: '@hooks_api'
+
+    definition_manager:
+        class: \PoP\Definitions\Definitions\DefinitionManager
+        public: true
