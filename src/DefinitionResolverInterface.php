@@ -1,5 +1,5 @@
 <?php
-namespace PoP\Definitions\Definitions;
+namespace PoP\Definitions;
 
 interface DefinitionResolverInterface
 {

@@ -1,5 +1,5 @@
 <?php
-namespace PoP\Definitions\Definitions;
+namespace PoP\Definitions;
 
 use PoP\Definitions\Settings\Environment;
 
