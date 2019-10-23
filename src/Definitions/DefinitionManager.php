@@ -41,6 +41,10 @@ class DefinitionManager implements DefinitionManagerInterface
             $this->definition_persistence->setDefinitionResolver($this->definition_resolver);
         }
     }
+    public function getDefinitionPersistence(): ?DefinitionPersistenceInterface
+    {
+        return $this->definition_persistence;
+    }
 
     /**
      * Make sure the name has not been defined already. If it has, throw an Exception
@@ -113,5 +117,12 @@ class DefinitionManager implements DefinitionManagerInterface
 
         // It didn't find it, assume it's the same
         return $definition;
+    }
+
+    public function maybeStoreDefinitionsPersistently(): void
+    {
+        if ($this->definition_persistence) {
+            $this->definition_persistence->storeDefinitionsPersistently();
+        }
     }
 }
