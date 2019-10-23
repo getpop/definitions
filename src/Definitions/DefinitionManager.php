@@ -115,6 +115,9 @@ class DefinitionManager implements DefinitionManagerInterface
         return $name;
     }
 
+    /**
+     * Given a definition, retrieve its original name
+     */
     public function getOriginalName($definition, $group): string
     {
         // If it is cached in this object, return it already
