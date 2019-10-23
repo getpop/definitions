@@ -19,11 +19,11 @@ class DefinitionManager implements DefinitionManagerInterface
         $this->hooksAPI = $hooksAPI;
     }
 
-    public function getDefinitionResolver(): ?DefinitionResolver
+    public function getDefinitionResolver(): ?DefinitionResolverInterface
     {
         return $this->definition_resolver;
     }
-    public function setDefinitionResolver(DefinitionResolver $definition_resolver): void
+    public function setDefinitionResolver(DefinitionResolverInterface $definition_resolver): void
     {
         $this->definition_resolver = $definition_resolver;
 
@@ -32,7 +32,7 @@ class DefinitionManager implements DefinitionManagerInterface
             $this->definition_persistence->setDefinitionResolver($this->definition_resolver);
         }
     }
-    public function setDefinitionPersistence(DefinitionPersistence $definition_persistence): void
+    public function setDefinitionPersistence(DefinitionPersistenceInterface $definition_persistence): void
     {
         $this->definition_persistence = $definition_persistence;
 
