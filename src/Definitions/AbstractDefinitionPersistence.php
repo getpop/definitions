@@ -7,8 +7,9 @@ abstract class AbstractDefinitionPersistence implements DefinitionPersistenceInt
 {
     protected $definitions = [];
     protected $names = [];
+    protected $resolverData = [];
     protected $addedDefinition = false;
-    protected $definition_resolver;
+    protected $definition_resolvers = [];
     protected $persisted_data;
 
     public function __construct()
@@ -22,18 +23,24 @@ abstract class AbstractDefinitionPersistence implements DefinitionPersistenceInt
         if ($this->persisted_data = $this->getPersistedData()) {
             $this->definitions = $this->persisted_data['database']['definitions'];
             $this->names = $this->persisted_data['database']['names'];
+            $this->resolverData = $this->persisted_data['resolver-data'];
         }
     }
 
-    public function setDefinitionResolver(DefinitionResolverInterface $definition_resolver): void
+    public function getDefinitionResolvers(): array
     {
-        $this->definition_resolver = $definition_resolver;
-        $this->definition_resolver->setPersistedData($this->persisted_data);
+        return $this->definition_resolvers;
     }
 
-    public function getDefinitionResolver()
+    public function setDefinitionResolver(DefinitionResolverInterface $definition_resolver, string $group): void
     {
-        return $this->definition_resolver;
+        $this->definition_resolvers[$group] = $definition_resolver;
+        $definition_resolver->setPersistedData($this->resolverData[$group]);
+    }
+
+    public function getDefinitionResolver(string $group)
+    {
+        return $this->definition_resolvers[$group];
     }
 
     public function getSavedDefinition($name, $group): ?string
@@ -85,12 +92,10 @@ abstract class AbstractDefinitionPersistence implements DefinitionPersistenceInt
             // Save the DB in the hard disk
             $data = array(
                 'database' => $this->getDatabase(),
+                'resolver-data' => [],
             );
-            if ($resolver = $this->getDefinitionResolver()) {
-                $data = array_merge(
-                    $data,
-                    $resolver->getDataToPersist()
-                );
+            foreach ($this->getDefinitionResolvers() as $group => $resolver) {
+                $data['resolver-data'][$group] = $resolver->getDataToPersist();
             }
             $this->persist($data);
         }

@@ -9,7 +9,7 @@ class DefinitionManager implements DefinitionManagerInterface
     protected $names = [];
     protected $name_definitions = [];
     protected $definition_names = [];
-    protected $definition_resolver;
+    protected $definition_resolvers = [];
     protected $definition_persistence;
 
     /**
@@ -41,20 +41,27 @@ class DefinitionManager implements DefinitionManagerInterface
         return $this->enabled;
     }
 
-    public function getDefinitionResolver(): ?DefinitionResolverInterface
+    public function getDefinitionResolvers(): array
+    {
+        if (!$this->isEnabled()) {
+            return [];
+        }
+        return $this->definition_resolvers;
+    }
+    public function getDefinitionResolver(string $group): ?DefinitionResolverInterface
     {
         if (!$this->isEnabled()) {
             return null;
         }
-        return $this->definition_resolver;
+        return $this->definition_resolvers[$group];
     }
-    public function setDefinitionResolver(DefinitionResolverInterface $definition_resolver): void
+    public function setDefinitionResolver(DefinitionResolverInterface $definition_resolver, string $group): void
     {
-        $this->definition_resolver = $definition_resolver;
+        $this->definition_resolvers[$group] = $definition_resolver;
 
         // Allow the Resolver and the Persistence to talk to each other
         if ($this->definition_persistence) {
-            $this->definition_persistence->setDefinitionResolver($this->definition_resolver);
+            $this->definition_persistence->setDefinitionResolver($definition_resolver, $group);
         }
     }
     public function getDefinitionPersistence(): ?DefinitionPersistenceInterface
@@ -69,8 +76,8 @@ class DefinitionManager implements DefinitionManagerInterface
         $this->definition_persistence = $definition_persistence;
 
         // Allow the Resolver and the Persistence to talk to each other
-        if ($this->definition_resolver) {
-            $this->definition_persistence->setDefinitionResolver($this->definition_resolver);
+        foreach ($this->definition_resolvers as $group => $definition_resolver) {
+            $this->definition_persistence->setDefinitionResolver($definition_resolver, $group);
         }
     }
 
@@ -112,7 +119,7 @@ class DefinitionManager implements DefinitionManagerInterface
         }
 
         // Allow the injected Resolver to decide how the name is resolved
-        if ($definitionResolver = $this->getDefinitionResolver()) {
+        if ($definitionResolver = $this->getDefinitionResolver($group)) {
             $definition = $definitionResolver->getDefinition($name, $group);
             if ($definition != $name && $definitionPersistence) {
                 $definitionPersistence->saveDefinition($definition, $name, $group);
