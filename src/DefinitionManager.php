@@ -1,7 +1,7 @@
 <?php
 namespace PoP\Definitions;
 
-use PoP\Definitions\Configuration\Environment;
+use PoP\Definitions\Environment;
 
 class DefinitionManager implements DefinitionManagerInterface
 {

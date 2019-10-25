@@ -1,7 +1,7 @@
 <?php
 namespace PoP\Definitions;
 
-use PoP\Definitions\Configuration\Environment;
+use PoP\Definitions\Environment;
 
 abstract class AbstractDefinitionPersistence implements DefinitionPersistenceInterface
 {
