@@ -101,6 +101,6 @@ abstract class AbstractDefinitionPersistence implements DefinitionPersistenceInt
         }
     }
 
-    protected abstract function getPersistedData(): array;
-    protected abstract function persist(array $data): void;
+    abstract protected function getPersistedData(): array;
+    abstract protected function persist(array $data): void;
 }

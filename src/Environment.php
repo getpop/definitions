@@ -12,4 +12,3 @@ class Environment
         return $_ENV['DISABLE_DEFINITION_PERSISTENCE'] ? strtolower($_ENV['DISABLE_DEFINITION_PERSISTENCE']) == "true" : false;
     }
 }
-

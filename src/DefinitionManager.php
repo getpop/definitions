@@ -18,7 +18,8 @@ class DefinitionManager implements DefinitionManagerInterface
      */
     protected $enabled;
 
-    function __construct() {
+    function __construct()
+    {
         /**
          * By default, enable/disable from the Environment value
          * This can be overriden through `setEnabled`
