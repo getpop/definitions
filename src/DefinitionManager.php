@@ -86,7 +86,13 @@ class DefinitionManager implements DefinitionManagerInterface
         // If the ID has already been defined, then throw an Exception
         $this->names[$group] = $this->names[$group] ?? array();
         if (in_array($name, $this->names[$group])) {
-            throw new \Exception(sprintf('Error with the Defining: another constant/object was already registered with name \'%s\' and group \'%s\'', $name, $group));
+            throw new \Exception(
+                sprintf(
+                    'Error with the Defining: another constant/object was already registered with name \'%s\' and group \'%s\'',
+                    $name,
+                    $group
+                )
+            );
         }
         $this->names[$group][] = $name;
 
@@ -95,9 +101,12 @@ class DefinitionManager implements DefinitionManagerInterface
     }
 
     /**
-     * Function used to create a definition for a module. Needed for reducing the filesize of the html generated for PROD
-     * Instead of using the name of the $module, we use a unique number in base 36, so the name will occupy much lower size
-     * Comment Leo 27/09/2017: Changed from $module to only $id so that it can also be used with ResourceLoaders
+     * Function used to create a definition for a module.
+     * Needed for reducing the filesize of the html generated for PROD
+     * Instead of using the name of the $module, we use a unique number in base 36,
+     * so the name will occupy much lower size
+     * Comment Leo 27/09/2017: Changed from $module to only $id so that it can also
+     * be used with ResourceLoaders
      */
     public function getDefinition($name, $group): string
     {

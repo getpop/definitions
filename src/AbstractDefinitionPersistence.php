@@ -17,10 +17,12 @@ abstract class AbstractDefinitionPersistence implements DefinitionPersistenceInt
 
     public function __construct()
     {
-        // Comment Leo 03/11/2017: added a DB to avoid the website from producing errors each time that new templates are introduced
+        // Comment Leo 03/11/2017: added a DB to avoid the website from producing errors
+        // each time that new templates are introduced
         // The DB is needed to return the same mangled results for the same incoming templates, over time
         // Otherwise, when a new module is introduced, the website after deploy will produce errors from
-        // the cached data in the localStorage and Service Workers (the cached data references templates with a name that is not the right one anymore)
+        // the cached data in the localStorage and Service Workers (the cached data references templates
+        // with a name that is not the right one anymore)
         // Get the database from the file saved in disk
         // The first time we generate the database, there will be nothing
         if ($this->persisted_data = $this->getPersistedData()) {
