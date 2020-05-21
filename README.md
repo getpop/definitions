@@ -20,12 +20,13 @@ Via Composer
 composer require getpop/definitions
 ```
 
-<!--
 ## Usage
 
+Initialize the component:
+
 ``` php
+\PoP\Definitions\Component::initialize();
 ```
--->
 
 ## Standards
 
