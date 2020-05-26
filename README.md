@@ -25,7 +25,9 @@ composer require getpop/definitions
 Initialize the component:
 
 ``` php
-\PoP\Definitions\Component::initialize();
+\PoP\Root\ComponentLoader::initializeComponents([
+    \PoP\Definitions\Component::class,
+]);
 ```
 
 ## Standards
