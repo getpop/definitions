@@ -39,8 +39,10 @@ before_script:
     # # For PHP 7.2 downgrade the code via Rector
     - phpenv versions
     - php --version
+    - which php
     - phpenv local 7.2
     - php --version
+    - which php
     # - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.2" ]]; then vendor/bin/rector process src; fi
 
 script:
