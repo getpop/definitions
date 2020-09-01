@@ -35,35 +35,25 @@ cache:
 #       env: 'COMPOSER_FLAGS="--prefer-stable --prefer-lowest"'
 
 before_script:
-    # For PHP 7.2 replace PHP version constraint from 7.4 to 7.2, remove PHPUnit, and execute Rector
-    - |
-      if [[ "$DOWNGRADE_CODE" == "true" ]]; then
-        composer require php:~7.2 --no-update --no-scripts
-        composer remove phpunit/phpunit --dev --no-update --no-scripts
-        travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
-        vendor/bin/rector process src
-      else
-        travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
-      fi
+    # For PHP 7.2 replace PHP version constraint from 7.4 to 7.2, and remove PHPUnit
+    - if [[ "$DOWNGRADE_CODE" == "true" ]]; then composer require php:~7.2 --no-update --no-scripts; fi
+    - if [[ "$DOWNGRADE_CODE" == "true" ]]; then composer remove phpunit/phpunit --dev --no-update --no-scripts; fi
+    - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
+    # For PHP 7.2 downgrade the code via Rector
+    - if [[ "$DOWNGRADE_CODE" == "true" ]]; then vendor/bin/rector process src; fi
 
 script:
-  # Execute tests on PHP 7.4, Switch to PHP 7.2 to test if downgraded code works
-  - |
-    if [[ "$DOWNGRADE_CODE" == "true" ]]; then
-        phpenv local 7.2
-        php --version
-    else
-        vendor/bin/phpcs -n --standard=psr2 src/
-        vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
-    fi
+  # Tests only on PHP 7.4
+  - if [[ "$DOWNGRADE_CODE" != "true" ]]; then vendor/bin/phpcs -n --standard=psr2 src/; fi
+  - if [[ "$DOWNGRADE_CODE" != "true" ]]; then vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover; fi
+  # Switch to PHP 7.2 to test if downgraded code works
+  - if [[ "$DOWNGRADE_CODE" == "true" ]]; then phpenv local 7.2; fi
+  - php --version
   - vendor/bin/phpstan analyse -c phpstan.neon.dist src
 
 after_script:
   # Tests only on PHP 7.4
-  - |
-    if [[ "$DOWNGRADE_CODE" != "true" ]]; then
-        wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover
-    fi
+  - if [[ "$DOWNGRADE_CODE" != "true" ]]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
 
 notifications:
   email:
