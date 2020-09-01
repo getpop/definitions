@@ -43,25 +43,25 @@ before_script:
     - phpenv versions
     - php --version
     - which php
-    - if [[ $DOWNGRADE_CODE == "true" ]]; phpenv local 7.2; fi
+    - if [[ "$DOWNGRADE_CODE" == "true" ]]; phpenv local 7.2; fi
     - php --version
     - which php
     # For PHP 7.2 replace PHP version constraint from 7.4 to 7.2, and remove PHPUnit
-    - if [[ $DOWNGRADE_CODE == "true" ]]; then composer require php:~7.2 --no-update --no-scripts; fi
-    - if [[ $DOWNGRADE_CODE == "true" ]]; then composer remove phpunit/phpunit --dev --no-update --no-scripts; fi
+    - if [[ "$DOWNGRADE_CODE" == "true" ]]; then composer require php:~7.2 --no-update --no-scripts; fi
+    - if [[ "$DOWNGRADE_CODE" == "true" ]]; then composer remove phpunit/phpunit --dev --no-update --no-scripts; fi
     - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
     # For PHP 7.2 downgrade the code via Rector
-    - if [[ $DOWNGRADE_CODE == "true" ]]; then vendor/bin/rector process src; fi
+    - if [[ "$DOWNGRADE_CODE" == "true" ]]; then vendor/bin/rector process src; fi
 
 script:
   # Tests only on PHP 7.4
-  - if [[ $DOWNGRADE_CODE != "true" ]]; then vendor/bin/phpcs -n --standard=psr2 src/; fi
-  - if [[ $DOWNGRADE_CODE != "true" ]]; then vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover; fi
+  - if [[ "$DOWNGRADE_CODE" != "true" ]]; then vendor/bin/phpcs -n --standard=psr2 src/; fi
+  - if [[ "$DOWNGRADE_CODE" != "true" ]]; then vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover; fi
   - vendor/bin/phpstan analyse -c phpstan.neon.dist src
 
 after_script:
   # Tests only on PHP 7.4
-  - if [[ $DOWNGRADE_CODE != "true" ]]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
+  - if [[ "$DOWNGRADE_CODE" != "true" ]]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
 
 notifications:
   email:
