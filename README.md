@@ -30,6 +30,27 @@ Initialize the component:
 ]);
 ```
 
+## PHP versions
+
+Allowed PHP code:
+
+- PHP 7.2
+- Typed properties from PHP 7.4
+
+The code can be downgraded from PHP 7.4 to PHP 7.2 to run in production:
+
+| | Development | Production |
+| --- | --- | --- |
+| **Min PHP version** | 7.4 | 7.2 (After removing typed properties) |
+
+### Downgrading PHP code
+
+Dry run to downgrade the code, via [Rector](https://github.com/rectorphp/rector):
+
+```bash
+composer downgrade-code
+```
+
 ## Standards
 
 [PSR-1](https://www.php-fig.org/psr/psr-1), [PSR-4](https://www.php-fig.org/psr/psr-4) and [PSR-12](https://www.php-fig.org/psr/psr-12).

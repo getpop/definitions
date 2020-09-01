@@ -1,10 +1,27 @@
-dist: trusty
+########################################################################
+# This pipeline is executed on 2 environments: PHP 7.4 and PHP 7.2
+# PHP 7.4 is for development
+# PHP 7.2 is for production (optional), downgrading the code via Rector
+#
+# Concerning PHP 7.2:
+#-----------------------------------------------------------------------
+# composer.json corresponds to PHP 7.4,
+# so the constraints for dependencies must be downgraded:
+# - php: ~7.2
+# - phpunit/phpunit: <= remove
+#
+# PHPUnit will not work, because phpunit/phpunit version 9.3 requires PHP 7.3+.
+# If running PHPStan fails, then downgrading the code has issues.
+########################################################################
+dist: xenial
 language: php
 
-php:
-  - 7.2
-  - 7.3
-  - 7.4
+jobs:
+  include:
+  - php: 7.4
+    env: DOWNGRADE_CODE=false
+  - php: 7.4
+    env: DOWNGRADE_CODE=true
 
 ## Cache composer
 cache:
@@ -18,15 +35,25 @@ cache:
 #       env: 'COMPOSER_FLAGS="--prefer-stable --prefer-lowest"'
 
 before_script:
-  - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
+    # For PHP 7.2 replace PHP version constraint from 7.4 to 7.2, and remove PHPUnit
+    - if [[ "$DOWNGRADE_CODE" == "true" ]]; then composer require php:~7.2 --no-update --no-scripts; fi
+    - if [[ "$DOWNGRADE_CODE" == "true" ]]; then composer remove phpunit/phpunit --dev --no-update --no-scripts; fi
+    - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
+    # For PHP 7.2 downgrade the code via Rector
+    - if [[ "$DOWNGRADE_CODE" == "true" ]]; then vendor/bin/rector process src; fi
 
 script:
-  - vendor/bin/phpcs -n --standard=psr2 src/
-  - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
+  # Tests only on PHP 7.4
+  - if [[ "$DOWNGRADE_CODE" != "true" ]]; then vendor/bin/phpcs -n --standard=psr2 src/; fi
+  - if [[ "$DOWNGRADE_CODE" != "true" ]]; then vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover; fi
+  # Switch to PHP 7.2 to test if downgraded code works
+  - if [[ "$DOWNGRADE_CODE" == "true" ]]; then phpenv local 7.2; fi
+  - php --version
   - vendor/bin/phpstan analyse -c phpstan.neon.dist src
 
 after_script:
-  - wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+  # Tests only on PHP 7.4
+  - if [[ "$DOWNGRADE_CODE" != "true" ]]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
 
 notifications:
   email:
