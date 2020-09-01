@@ -1,17 +1,26 @@
 ########################################################################
-# This pipeline is executed on 2 environments: PHP 7.4 and PHP 7.2
-# PHP 7.4 is for development
-# PHP 7.2 is for production (optional), downgrading the code via Rector
+# This pipeline is executed on PHP 7.4:
+# - required for development
+# - required to run Rector, to generate the PHP 7.2-compatible code for production
 #
-# Concerning PHP 7.2:
-#-----------------------------------------------------------------------
-# composer.json corresponds to PHP 7.4,
-# so the constraints for dependencies must be downgraded:
-# - php: ~7.2
-# - phpunit/phpunit: <= remove
+# It uses the Build Environment "Xenial", because it has PHP 7.2 preinstalled,
+# so we can switch from the global PHP 7.4 to local PHP 7.2 through `phpenv`
 #
-# PHPUnit will not work, because phpunit/phpunit version 9.3 requires PHP 7.3+.
-# If running PHPStan fails, then downgrading the code has issues.
+# There are 2 parallel executions, changing value of env variable DOWNGRADE_CODE:
+# DOWNGRADE_CODE=true
+# DOWNGRADE_CODE=false
+#
+# When DOWNGRADE_CODE is false, it is the standard testing pipeline:
+# Execute PHPCS, PHPUnit and PHPStan to check there are no issues, and generate report
+#
+# When DOWNGRADE_CODE is true, it tests the conversion of the PHP code version 7.4 to 7.2
+# It follows these steps:
+# 1. Remove or reduce the constraints for dependencies in composer.json:
+# - php: ~7.2 <= reduced
+# - phpunit/phpunit: <= removed
+#   (PHPUnit will not work, because phpunit/phpunit version 9.3 requires PHP 7.3+)
+# 2. Run Rector to downgrade the code
+# 3. Run PHPStan. If it exits with no errors, then downgrading the code works well.
 ########################################################################
 dist: xenial
 language: php
