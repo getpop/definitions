@@ -8,12 +8,11 @@ use PoP\Definitions\Environment;
 
 abstract class AbstractDefinitionPersistence implements DefinitionPersistenceInterface
 {
-    protected $definitions = [];
-    protected $names = [];
-    protected $resolverData = [];
-    protected $addedDefinition = false;
-    protected $definition_resolvers = [];
-    protected $persisted_data;
+    protected array $definitions = [];
+    protected array $names = [];
+    protected array $resolverData = [];
+    protected bool $addedDefinition = false;
+    protected array $definition_resolvers = [];
 
     public function __construct()
     {
@@ -25,10 +24,10 @@ abstract class AbstractDefinitionPersistence implements DefinitionPersistenceInt
         // with a name that is not the right one anymore)
         // Get the database from the file saved in disk
         // The first time we generate the database, there will be nothing
-        if ($this->persisted_data = $this->getPersistedData()) {
-            $this->definitions = $this->persisted_data['database']['definitions'];
-            $this->names = $this->persisted_data['database']['names'];
-            $this->resolverData = $this->persisted_data['resolver-data'];
+        if ($persisted_data = $this->getPersistedData()) {
+            $this->definitions = $persisted_data['database']['definitions'];
+            $this->names = $persisted_data['database']['names'];
+            $this->resolverData = $persisted_data['resolver-data'];
         }
     }
 

@@ -8,18 +8,18 @@ use PoP\Definitions\Environment;
 
 class DefinitionManager implements DefinitionManagerInterface
 {
-    protected $names = [];
-    protected $name_definitions = [];
-    protected $definition_names = [];
-    protected $definition_resolvers = [];
-    protected $definition_persistence;
+    protected array $names = [];
+    protected array $name_definitions = [];
+    protected array $definition_names = [];
+    protected array $definition_resolvers = [];
+    protected ?DefinitionPersistenceInterface $definition_persistence = null;
 
     /**
      * Allow ComponentModel to disable it when not mangling the response
      *
      * @var bool
      */
-    protected $enabled;
+    protected bool $enabled;
 
     public function __construct()
     {

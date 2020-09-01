@@ -1,9 +1,23 @@
+########################################################################
+# This pipeline is executed on 2 environments: PHP 7.4 and PHP 7.2
+# PHP 7.4 is for development
+# PHP 7.2 is for production (optional), downgrading the code via Rector
+#
+# Concerning PHP 7.2:
+#-----------------------------------------------------------------------
+# composer.json corresponds to PHP 7.4,
+# so the constraints for dependencies must be downgraded:
+# - php: ~7.2
+# - phpunit/phpunit: <= remove
+#
+# PHPUnit will not work, because phpunit/phpunit version 9.3 requires PHP 7.3+.
+# If running PHPStan fails, then downgrading the code has issues.
+########################################################################
 dist: trusty
 language: php
 
 php:
   - 7.2
-  - 7.3
   - 7.4
 
 ## Cache composer
@@ -18,15 +32,22 @@ cache:
 #       env: 'COMPOSER_FLAGS="--prefer-stable --prefer-lowest"'
 
 before_script:
-  - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
+    # For PHP 7.2 replace PHP version constraint from 7.4 to 7.2, and remove PHPUnit
+    - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.2" ]]; then composer require php:~7.2 --no-update --no-scripts; fi
+    - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.2" ]]; then composer remove phpunit/phpunit --dev --no-update --no-scripts; fi
+    - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
+    # For PHP 7.2 downgrade the code via Rector
+    - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.2" ]]; then vendor/bin/rector process src; fi
 
 script:
-  - vendor/bin/phpcs -n --standard=psr2 src/
-  - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
+  # Tests only on PHP 7.4
+  - if [[ ${TRAVIS_PHP_VERSION:0:3} != "7.2" ]]; then vendor/bin/phpcs -n --standard=psr2 src/; fi
+  - if [[ ${TRAVIS_PHP_VERSION:0:3} != "7.2" ]]; then vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover; fi
   - vendor/bin/phpstan analyse -c phpstan.neon.dist src
 
 after_script:
-  - wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+  # Tests only on PHP 7.4
+  - if [[ ${TRAVIS_PHP_VERSION:0:3} != "7.2" ]]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
 
 notifications:
   email:
