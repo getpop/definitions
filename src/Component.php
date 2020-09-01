@@ -14,6 +14,10 @@ class Component extends AbstractComponent
 {
     use YAMLServicesTrait;
     // const VERSION = '0.1.0';
+    public static function get_something_that_fails(): array
+    {
+        return [];
+    }
 
     public static function getDependedComponentClasses(): array
     {
