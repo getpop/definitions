@@ -13,7 +13,7 @@
 # PHPUnit will not work, because phpunit/phpunit version 9.3 requires PHP 7.3+.
 # If running PHPStan fails, then downgrading the code has issues.
 ########################################################################
-dist: focus
+dist: focal
 language: php
 
 php:
