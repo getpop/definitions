@@ -43,10 +43,10 @@ script:
   - if [[ "$DOWNGRADE_CODE" != "true" ]]; then vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover; fi
   # Switch to PHP 7.2 to test if downgraded code works, then up again to 7.4
   - if [[ "$DOWNGRADE_CODE" == "true" ]]; then phpenv local 7.2; fi
-  - if [[ "$DOWNGRADE_CODE" == "true" ]]; then php --version; fi
+  - php --version
   - vendor/bin/phpstan analyse -c phpstan.neon.dist src
   - if [[ "$DOWNGRADE_CODE" == "true" ]]; then phpenv local 7.4; fi
-  - if [[ "$DOWNGRADE_CODE" == "true" ]]; then php --version; fi
+  - php --version
 
 after_script:
   # Tests only on PHP 7.4
