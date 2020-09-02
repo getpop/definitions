@@ -8,9 +8,21 @@ use PoP\Definitions\Environment;
 
 class DefinitionManager implements DefinitionManagerInterface
 {
+    /**
+     * @var array<string, array>
+     */
     protected array $names = [];
+    /**
+     * @var array<string, array>
+     */
     protected array $name_definitions = [];
+    /**
+     * @var array<string, array>
+     */
     protected array $definition_names = [];
+    /**
+     * @var array<string, DefinitionResolverInterface>
+     */
     protected array $definition_resolvers = [];
     protected ?DefinitionPersistenceInterface $definition_persistence = null;
 
@@ -38,6 +50,9 @@ class DefinitionManager implements DefinitionManagerInterface
         return $this->enabled;
     }
 
+    /**
+     * @return array<string, DefinitionResolverInterface>
+     */
     public function getDefinitionResolvers(): array
     {
         if (!$this->isEnabled()) {
@@ -81,7 +96,7 @@ class DefinitionManager implements DefinitionManagerInterface
     /**
      * Make sure the name has not been defined already. If it has, throw an Exception
      */
-    public function getUniqueDefinition($name, $group): string
+    public function getUniqueDefinition(string $name, string $group): string
     {
         // If the ID has already been defined, then throw an Exception
         $this->names[$group] = $this->names[$group] ?? array();
@@ -108,7 +123,7 @@ class DefinitionManager implements DefinitionManagerInterface
      * Comment Leo 27/09/2017: Changed from $module to only $id so that it can also
      * be used with ResourceLoaders
      */
-    public function getDefinition($name, $group): string
+    public function getDefinition(string $name, string $group): string
     {
         if ($definition = $this->name_definitions[$group][$name]) {
             return $definition;
@@ -141,7 +156,7 @@ class DefinitionManager implements DefinitionManagerInterface
     /**
      * Given a definition, retrieve its original name
      */
-    public function getOriginalName($definition, $group): string
+    public function getOriginalName(string $definition, string $group): string
     {
         // If it is cached in this object, return it already
         if (isset($this->definition_names[$group][$definition])) {

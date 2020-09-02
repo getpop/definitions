@@ -8,10 +8,22 @@ use PoP\Definitions\Environment;
 
 abstract class AbstractDefinitionPersistence implements DefinitionPersistenceInterface
 {
+    /**
+     * @var array<string, array>
+     */
     protected array $definitions = [];
+    /**
+     * @var array<string, array>
+     */
     protected array $names = [];
+    /**
+     * @var array<string, array>
+     */
     protected array $resolverData = [];
     protected bool $addedDefinition = false;
+    /**
+     * @var array<string, DefinitionResolverInterface>
+     */
     protected array $definition_resolvers = [];
 
     public function __construct()
@@ -31,6 +43,9 @@ abstract class AbstractDefinitionPersistence implements DefinitionPersistenceInt
         }
     }
 
+    /**
+     * @return array<string, DefinitionResolverInterface>
+     */
     public function getDefinitionResolvers(): array
     {
         return $this->definition_resolvers;
@@ -42,12 +57,12 @@ abstract class AbstractDefinitionPersistence implements DefinitionPersistenceInt
         $definition_resolver->setPersistedData($this->resolverData[$group]);
     }
 
-    public function getDefinitionResolver(string $group)
+    public function getDefinitionResolver(string $group): ?DefinitionResolverInterface
     {
         return $this->definition_resolvers[$group];
     }
 
-    public function getSavedDefinition($name, $group): ?string
+    public function getSavedDefinition(string $name, string $group): ?string
     {
         if ($definition = $this->definitions[$group][$name]) {
             return $definition;
@@ -56,7 +71,7 @@ abstract class AbstractDefinitionPersistence implements DefinitionPersistenceInt
         return null;
     }
 
-    public function getOriginalName($definition, $group): ?string
+    public function getOriginalName(string $definition, string $group): ?string
     {
         if ($name = $this->names[$group][$definition]) {
             return $name;
@@ -65,7 +80,7 @@ abstract class AbstractDefinitionPersistence implements DefinitionPersistenceInt
         return null;
     }
 
-    public function saveDefinition($definition, $name, $group): void
+    public function saveDefinition(string $definition, string $name, string $group): void
     {
         $this->definitions[$group][$name] = $definition;
         $this->names[$group][$definition] = $name;
@@ -74,6 +89,9 @@ abstract class AbstractDefinitionPersistence implements DefinitionPersistenceInt
         $this->addedDefinition = true;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getDatabase(): array
     {
         return [
@@ -105,6 +123,12 @@ abstract class AbstractDefinitionPersistence implements DefinitionPersistenceInt
         }
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     abstract protected function getPersistedData(): array;
+    /**
+     * @param array<string, mixed> $data
+     */
     abstract protected function persist(array $data): void;
 }
