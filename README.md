@@ -32,20 +32,27 @@ Initialize the component:
 
 ## PHP versions
 
-Allowed PHP code:
+Requirements:
 
-- PHP 7.2
-- Typed properties from PHP 7.4
+- PHP 7.4 for development
+- PHP 7.1 for production
 
-The code can be downgraded from PHP 7.4 to PHP 7.2 to run in production:
+Allowed PHP code, in this package and dependencies:
 
-| | Development | Production |
-| --- | --- | --- |
-| **Min PHP version** | 7.4 | 7.2 (After removing typed properties) |
+| PHP Version | Features |
+| --- | --- |
+| 7.1 | Everything |
+| 7.2 | `object` type |
+| 7.4 | Typed properties |
+| 8.0 | functions `str_contains`, `str_ends_with` and `str_starts_with` |
 
-### Downgrading PHP code
+<!-- | 8.0 | `mixed` type |
+| 8.0 | `static` return type |
+| 8.0 | Type unions ([coming soon](https://github.com/rectorphp/rector/issues/4062)) | -->
 
-Dry run to downgrade the code, via [Rector](https://github.com/rectorphp/rector):
+### Downgrading PHP code from v7.4 to v7.1
+
+Via [Rector](https://github.com/rectorphp/rector) (dry-run mode):
 
 ```bash
 composer downgrade-code
