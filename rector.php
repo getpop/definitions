@@ -13,6 +13,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     // paths to refactor; solid alternative to CLI arguments
     $parameters->set(Option::PATHS, [
         __DIR__ . '/src',
+        __DIR__ . '/vendor/getpop',
     ]);
 
     // is there a file you need to skip?
