@@ -11,6 +11,10 @@ class DefinitionManagerFacade
 {
     public static function getInstance(): DefinitionManagerInterface
     {
-        return ContainerBuilderFactory::getInstance()->get('definition_manager');
+        /**
+         * @var DefinitionManagerInterface
+         */
+        $service = ContainerBuilderFactory::getInstance()->get('definition_manager');
+        return $service;
     }
 }
