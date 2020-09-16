@@ -99,7 +99,7 @@ class DefinitionManager implements DefinitionManagerInterface
     public function getUniqueDefinition(string $name, string $group): string
     {
         // If the ID has already been defined, then throw an Exception
-        $this->names[$group] = $this->names[$group] ?? array();
+        $this->names[$group] ??= [];
         if (in_array($name, $this->names[$group])) {
             throw new \Exception(
                 sprintf(
