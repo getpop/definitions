@@ -33,7 +33,6 @@ cache:
     - $HOME/.composer/cache
 
 before_script:
-    - composer selfupdate
     - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
     # Downgrade the code to PHP 7.1 via Rector
     - if [[ "$DOWNGRADE_CODE" == "true" ]]; then vendor/bin/rector process; fi
