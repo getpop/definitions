@@ -34,23 +34,14 @@ Initialize the component:
 
 Requirements:
 
-- PHP 7.4 for development
-- PHP 7.1 for production
+- PHP 7.4+ for development
+- PHP 7.1+ for production
 
-Allowed PHP code, in this package and dependencies:
+### Supported PHP features
 
-| PHP Version | Features |
-| --- | --- |
-| 7.1 | Everything |
-| 7.2 | `object` type |
-| 7.4 | Typed properties |
-| 8.0 | functions `str_contains`, `str_ends_with` and `str_starts_with` |
+Same as the [Supported PHP features for `getpop/root`](https://github.com/getpop/root/#supported-php-features)
 
-<!-- | 8.0 | `mixed` type |
-| 8.0 | `static` return type |
-| 8.0 | Type unions ([coming soon](https://github.com/rectorphp/rector/issues/4062)) | -->
-
-### Downgrading PHP code from v7.4 to v7.1
+### Downgrading code to PHP 7.1
 
 Via [Rector](https://github.com/rectorphp/rector) (dry-run mode):
 
