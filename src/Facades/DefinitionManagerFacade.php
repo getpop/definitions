@@ -14,7 +14,7 @@ class DefinitionManagerFacade
         /**
          * @var DefinitionManagerInterface
          */
-        $service = ContainerBuilderFactory::getInstance()->get('definition_manager');
+        $service = ContainerBuilderFactory::getInstance()->get(DefinitionManagerInterface::class);
         return $service;
     }
 }

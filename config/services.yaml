@@ -1,4 +1,4 @@
 services:
-    definition_manager:
+    PoP\Definitions\DefinitionManagerInterface:
         class: \PoP\Definitions\DefinitionManager
         public: true
