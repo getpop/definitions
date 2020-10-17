@@ -8,14 +8,14 @@ class Environment
 {
     public static function disableDefinitions(): bool
     {
-        return isset($_ENV['DISABLE_DEFINITIONS']) ?
-            strtolower($_ENV['DISABLE_DEFINITIONS']) == "true" :
+        return getenv('DISABLE_DEFINITIONS') !== false ?
+            strtolower(getenv('DISABLE_DEFINITIONS')) == "true" :
             false;
     }
     public static function disableDefinitionPersistence(): bool
     {
-        return isset($_ENV['DISABLE_DEFINITION_PERSISTENCE']) ?
-            strtolower($_ENV['DISABLE_DEFINITION_PERSISTENCE']) == "true" :
+        return getenv('DISABLE_DEFINITION_PERSISTENCE') !== false ?
+            strtolower(getenv('DISABLE_DEFINITION_PERSISTENCE')) == "true" :
             false;
     }
 }
