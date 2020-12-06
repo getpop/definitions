@@ -65,7 +65,7 @@ class DefinitionManager implements DefinitionManagerInterface
         if (!$this->isEnabled()) {
             return null;
         }
-        return $this->definition_resolvers[$group];
+        return $this->definition_resolvers[$group] ?? null;
     }
     public function setDefinitionResolver(DefinitionResolverInterface $definition_resolver, string $group): void
     {
@@ -125,7 +125,7 @@ class DefinitionManager implements DefinitionManagerInterface
      */
     public function getDefinition(string $name, string $group): string
     {
-        if ($definition = $this->name_definitions[$group][$name]) {
+        if ($definition = isset($this->name_definitions[$group]) ? $this->name_definitions[$group][$name] : null) {
             return $definition;
         }
 
