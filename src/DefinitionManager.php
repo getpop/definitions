@@ -125,7 +125,7 @@ class DefinitionManager implements DefinitionManagerInterface
      */
     public function getDefinition(string $name, string $group): string
     {
-        if ($definition = isset($this->name_definitions[$group]) ? $this->name_definitions[$group][$name] : null) {
+        if ($definition = (isset($this->name_definitions[$group]) ? $this->name_definitions[$group][$name] : null)) {
             return $definition;
         }
 
