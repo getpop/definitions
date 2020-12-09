@@ -64,7 +64,7 @@ abstract class AbstractDefinitionPersistence implements DefinitionPersistenceInt
 
     public function getSavedDefinition(string $name, string $group): ?string
     {
-        if ($definition = $this->definitions[$group][$name]) {
+        if ($definition = $this->definitions[$group][$name] ?? null) {
             return $definition;
         }
 
@@ -73,7 +73,7 @@ abstract class AbstractDefinitionPersistence implements DefinitionPersistenceInt
 
     public function getOriginalName(string $definition, string $group): ?string
     {
-        if ($name = $this->names[$group][$definition]) {
+        if ($name = $this->names[$group][$definition] ?? null) {
             return $name;
         }
 
